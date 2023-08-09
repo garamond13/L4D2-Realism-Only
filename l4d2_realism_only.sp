@@ -3,9 +3,12 @@
 
 #include <sourcemod>
 
-#define VERSION "1.0.0"
+#define VERSION "1.1.0"
 
 #define REJECT_MESSAGE "The server does not support this gamemode. Only realism is supported"
+
+Handle h_mp_gamemode;
+bool is_rejected;
 
 public Plugin myinfo = {
     name = "L4D2 Realism Only",
@@ -14,9 +17,6 @@ public Plugin myinfo = {
     version = VERSION,
     url = "https://github.com/garamond13/L4D2-Realism-Only"
 };
-
-Handle h_mp_gamemode;
-bool should_changelevel;
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) 
 {	
@@ -37,9 +37,9 @@ public void OnMapStart()
 	char mp_gamemode[32];
 	GetConVarString(h_mp_gamemode, mp_gamemode, sizeof(mp_gamemode));
 	if (!strcmp(mp_gamemode, "realism"))
-		should_changelevel = false;
+		is_rejected = false;
 	else {
-		should_changelevel = true;
+		is_rejected = true;
 		CreateTimer(1.0, changelevel);
 	}
 }
@@ -47,7 +47,7 @@ public void OnMapStart()
 public bool OnClientConnect(int client, char[] rejectmsg, int maxlength)
 {
 	//reject connections with reject message
-	if (should_changelevel && !IsFakeClient(client)) {
+	if (is_rejected && !IsFakeClient(client)) {
 		strcopy(rejectmsg, maxlength, REJECT_MESSAGE);
 		return false;
 	}
@@ -57,6 +57,6 @@ public bool OnClientConnect(int client, char[] rejectmsg, int maxlength)
 
 public Action changelevel(Handle timer)
 {
-	ServerCommand("map c1m1_hotel realism");
+	ServerCommand("sm_cvar mp_gamemode realism;changelevel c1m1_hotel");
 	return Plugin_Continue;
 }
