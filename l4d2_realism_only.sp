@@ -3,8 +3,9 @@
 
 #include <sourcemod>
 
-#define VERSION "1.1.1"
+#define VERSION "1.1.2"
 
+//dot at the end of the message will be auto added
 #define REJECT_MESSAGE "The server does not support this gamemode. Only realism is supported"
 
 Handle h_mp_gamemode;
@@ -46,7 +47,7 @@ public bool OnClientConnect(int client, char[] rejectmsg, int maxlength)
 	return true;
 }
 
-public Action changelevel(Handle timer)
+Action changelevel(Handle timer)
 {
 	ServerCommand("sm_cvar mp_gamemode realism;changelevel c1m1_hotel");
 	return Plugin_Continue;
