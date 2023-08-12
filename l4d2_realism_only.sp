@@ -3,7 +3,7 @@
 
 #include <sourcemod>
 
-#define VERSION "1.1.0"
+#define VERSION "1.1.1"
 
 #define REJECT_MESSAGE "The server does not support this gamemode. Only realism is supported"
 
@@ -17,15 +17,6 @@ public Plugin myinfo = {
     version = VERSION,
     url = "https://github.com/garamond13/L4D2-Realism-Only"
 };
-
-public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) 
-{	
-	if(GetEngineVersion() != Engine_Left4Dead2) {
-		strcopy(error, err_max, "Plugin only supports Left 4 Dead 2.");
-		return APLRes_SilentFailure;
-	}
-	return APLRes_Success; 
-}
 
 public void OnPluginStart()
 {
