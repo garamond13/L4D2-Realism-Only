@@ -1,9 +1,10 @@
 #pragma semicolon 1
-#pragma newdecls required
 
 #include <sourcemod>
 
-#define VERSION "1.1.2"
+#pragma newdecls required
+
+#define VERSION "1.1.3"
 
 //dot at the end of the message will be auto added
 #define REJECT_MESSAGE "The server does not support this gamemode. Only realism is supported"
@@ -47,7 +48,7 @@ public bool OnClientConnect(int client, char[] rejectmsg, int maxlength)
 	return true;
 }
 
-Action changelevel(Handle timer)
+public Action changelevel(Handle timer)
 {
 	ServerCommand("sm_cvar mp_gamemode realism;changelevel c1m1_hotel");
 	return Plugin_Continue;
