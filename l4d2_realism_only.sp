@@ -1,16 +1,11 @@
-#pragma semicolon 1
-
 #include <sourcemod>
 
+#pragma semicolon 1
 #pragma newdecls required
 
-#define VERSION "1.1.3"
+#define VERSION "1.2.0"
 
-//dot at the end of the message will be auto added
-#define REJECT_MESSAGE "The server does not support this gamemode. Only realism is supported"
-
-Handle h_mp_gamemode;
-bool is_rejected;
+bool is_gamemode_rejected;
 
 public Plugin myinfo = {
     name = "L4D2 Realism Only",
@@ -20,36 +15,32 @@ public Plugin myinfo = {
     url = "https://github.com/garamond13/L4D2-Realism-Only"
 };
 
-public void OnPluginStart()
-{
-	h_mp_gamemode = FindConVar("mp_gamemode");
-}
-
 public void OnMapStart()
 {
-	char mp_gamemode[32];
-	GetConVarString(h_mp_gamemode, mp_gamemode, sizeof(mp_gamemode));
-	if (!strcmp(mp_gamemode, "realism"))
-		is_rejected = false;
+	char buffer[32];
+	GetConVarString(FindConVar("mp_gamemode"), buffer, sizeof(buffer));
+	if (!strcmp(buffer, "realism"))
+		is_gamemode_rejected = false;
 	else {
-		is_rejected = true;
-		CreateTimer(1.0, changelevel);
+		is_gamemode_rejected = true;
+		CreateTimer(1.0, changelevel, TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
 public bool OnClientConnect(int client, char[] rejectmsg, int maxlength)
 {
-	//reject connections with reject message
-	if (is_rejected && !IsFakeClient(client)) {
-		strcopy(rejectmsg, maxlength, REJECT_MESSAGE);
+	if (is_gamemode_rejected && !IsFakeClient(client)) {
+
+		//a dot at the end of the message will be auto added
+		strcopy(rejectmsg, maxlength, "Server doesn't support this gamemode. Only realism is supported");
+
 		return false;
 	}
-
 	return true;
 }
 
-public Action changelevel(Handle timer)
+Action changelevel(Handle timer)
 {
-	ServerCommand("sm_cvar mp_gamemode realism;changelevel c1m1_hotel");
+	ServerCommand("sm_cvar mp_gamemode realism; changelevel c1m1_hotel");
 	return Plugin_Continue;
 }
