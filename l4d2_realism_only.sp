@@ -3,7 +3,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define VERSION "1.2.0"
+#define VERSION "1.2.1"
 
 bool is_gamemode_rejected;
 
@@ -23,7 +23,7 @@ public void OnMapStart()
 		is_gamemode_rejected = false;
 	else {
 		is_gamemode_rejected = true;
-		CreateTimer(1.0, changelevel, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.0, changelevel, 0, TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
